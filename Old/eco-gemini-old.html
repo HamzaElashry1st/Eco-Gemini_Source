@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <link rel="shortcut icon" href="Assets/Gemini.svg" type="image/x-icon">
+  <title>Eco-Gemini</title>
+</head>
+
+<body>
+  <header>
+    <button id="darklight"><img id="lightdarkimg" src="Assets/Moon.svg" style="margin-bottom: -4.5px;" height="25"
+        width="25"> Switch Mode</button>
+    <ul id="end">
+      <li><a id="index" href="index.html" class="not-current"><img src="Assets/Home.svg" height="25" width="25"
+            style="margin-bottom: -4px;"> Home</a></li>
+      <li><a class="current"><img src="Assets/Gemini.svg" class="curimg" height="25" width="25"
+            style="margin-bottom: -4px; opacity: 0.5;"> Eco-Gemini</a></li>
+      <li><a id="todoh" href="todo.html" class="not-current"><img src="Assets/Todo.svg" height="25" width="25"
+            style="margin-bottom: -4px;"> To Do</a></li>
+      <li><a id="leadh" href="leaderboard.html" class="not-current"><img src="Assets/Leaderboard.svg" height="25"
+            width="25" style="margin-bottom: -4px;"> Leaderboard</a></li>
+      <li><a id="about" href="about.html" class="not-current"><img src="Assets/About.svg" height="25" width="25"
+            style="margin-bottom: -4px;"> About</a></li>
+    </ul>
+  </header>
+  <div id="formdiv">
+    <select id="model">
+      <option selected>gemini-1.5-flash-latest</option>
+      <option>gemini-1.5-pro-latest</option>
+    </select>
+    <h1 class="main"><img src="Assets/Gemini.svg" style="margin-bottom: -3px;"> Eco-Gemini</h1>
+    <textarea rows="3" cols="20" id="input"></textarea>
+    <br>
+    <input type="file" name="fileInput" id="fileInput" style="display: none;" accept=".png, .jpeg, .jpg, .webp, .txt" />
+    <label for="fileInput" id="forfile" style="text-decoration: underline; cursor: pointer;">Attach a file from
+      here.</label>
+    <br>
+    <p id="textcontainer" style="background-color: rgba(0, 0, 0, 0.3); border-radius: 10px" hidden></p>
+    <img alt="Image" id="image" style="border-radius: 10px;" width="200" hidden>
+    <br>
+    <p id="ptab">Press <button id="tab" disabled>tab</button> to add a suggestion.</p>
+    <br>
+    <br>
+    <input type="submit" id="submit" value="Eco-it">
+    <p id="output">Eco-Gemini Output</p>
+    <br>
+  </div>
+  <script type="importmap">
+        {
+          "imports": {
+            "@google/generative-ai": "https://esm.run/@google/generative-ai"
+          }
+        }
+      </script>
+  <script type="module">
+    var light;
+    const urlParams = new URLSearchParams(window.location.search);
+    const sharedData = urlParams.get("light");
+    if (sharedData != 0 && sharedData != 1) {
+      light = true;
+    }
+    else {
+      if (sharedData == 0) {
+        light = false;
+      }
+      if (sharedData == 1) {
+        light = true;
+      }
+    }
+
+    async function visChange0() {
+      document.getElementById("formdiv").style.opacity = "0";
+      document.getElementById("formdiv").style.animationName = "curback";
+      document.getElementById("formdiv").style.animationDuration = "0.2s";
+    }
+
+    async function visChange1() {
+      document.getElementById("formdiv").style.opacity = "1";
+      document.getElementById("formdiv").style.animationName = "revcurback";
+      document.getElementById("formdiv").style.animationDuration = "0.19s";
+    }
+
+    document.getElementById("index").addEventListener("mouseover", () => visChange0())
+    document.getElementById("index").addEventListener("mouseleave", () => visChange1())
+    document.getElementById("todoh").addEventListener("mouseover", () => visChange0())
+    document.getElementById("todoh").addEventListener("mouseleave", () => visChange1())
+    document.getElementById("leadh").addEventListener("mouseover", () => visChange0())
+    document.getElementById("leadh").addEventListener("mouseleave", () => visChange1())
+    document.getElementById("about").addEventListener("mouseover", () => visChange0())
+    document.getElementById("about").addEventListener("mouseleave", () => visChange1())
+
+    var user = ["Those messages are the user messages. Those messages are in a list called var user; While the first string in the list is not a user message, it is only system instructions. If you didn't find anything else this message in the list, this means that the user didn't submit something yet."];
+    var ai = ["Those messages are your previous messages. Those messages are in a list called var ai; While the first string in the list is not a message of your previous messages, it is only system instructions. If you didn't find anything else this message in the list, this means that the user didn't submit something yet."]
+    const delay = ms => new Promise(res => setTimeout(res, ms));
+    import { GoogleGenerativeAI } from "@google/generative-ai";
+    const API_KEY = "AIzaSyDDZnIZGMAm2_VAlK0f3RJQKxIRbdHMIf0";
+    const genAI = new GoogleGenerativeAI(API_KEY);
+
+    async function fileToGenerativePart(file) {
+      var base64EncodedDataPromise = new Promise((resolve) => {
+        var reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result.split(',')[1]);
+        reader.readAsDataURL(file);
+      });
+      return {
+        inlineData: { data: await base64EncodedDataPromise, mimeType: file.type },
+      };
+    }
+
+    async function run() {
+      document.getElementById("submit").disabled = true;
+      user.push(document.getElementById("input").value);
+      await delay(1);
+      let message = document.getElementById("input").value;
+      document.getElementById("input").value = "";
+      document.getElementById("output").style.textDecoration = "underline";
+      document.getElementById("output").innerText = "Generating.";
+      await delay(500);
+      document.getElementById("output").innerText = "Generating..";
+      await delay(500);
+      console.log(document.getElementById("model").options[document.getElementById("model").selectedIndex].text);
+      document.getElementById("output").innerText = "Generating...";
+      const model = genAI.getGenerativeModel({
+        model: document.getElementById("model").options[document.getElementById("model").selectedIndex].text,
+        systemInstruction: "You are Eco-Gemini, designed to discuss environmental topics, including those related to the Conference of the Parties to the United Nations Framework Convention on Climate Change and endangered wildlife. Your purpose is eco-focused, and you'll verify if questions are environmentally-related before responding. You can analyze images and audio but after highly-checking. You can remember the previous messages from two lists: 1. " + user + ". 2. " + ai + ".",
+      });
+      var result;
+      if (document.getElementById("fileInput").files.length == 1) {
+        var fileInputEl = document.querySelector("input[type=file]");
+        var sentFile = await Promise.all(
+          [...fileInputEl.files].map(fileToGenerativePart)
+        );
+
+        result = await model.generateContent([message, ...sentFile]);
+        console.log(result.response.text().toString());
+        document.querySelector("input[type=file]").value = null;
+      }
+      else {
+        result = await model.generateContent(message);
+        console.log(result.response.text().toString());
+      }
+      var response = await result.response;
+      var text = response.text();
+      ai.push(text);
+      document.getElementById("submit").disabled = true;
+      await delay(1000);
+      document.getElementById("submit").disabled = false;
+      document.getElementById('output').style.textDecoration = "none";
+      document.getElementById('output').innerText = text;
+    }
+
+    document.getElementById("submit").addEventListener("click", () => runner());
+    document.getElementById("darklight").addEventListener("click", () => light = !light)
+
+    async function runner() {
+      let current = document.getElementById("output").textContent;
+      if (document.getElementById("input").value.trimStart() != "") {
+        if (navigator.onLine) {
+          run();
+        }
+        else {
+          var underl = document.getElementById("output").style.textDecoration;
+          document.getElementById("submit").disabled = true;
+          document.getElementById("output").innerText = "Please, check your internet connection.";
+          document.getElementById("output").style.textDecoration = "underlined";
+          await delay(1250);
+          document.getElementById("submit").disabled = false;
+          document.getElementById("output").innerText = current;
+          document.getElementById("output").style.textDecoration = underl;
+        }
+      }
+      else {
+        var fillRequests = [
+          "Please fill the Eco-Message.",
+          "An Eco-Message is required.",
+          "Eco-Gemini cannot read your ideas.",
+          "Not green enough to response.",
+          "What Eco-Gemini can read is \' \'.",
+          "Cannot you fill it, please?",
+          "Eco-Gemini cannot even wonder about why is it \' \', so of course he cannot read minds.",
+          "Eco-Gemini is so Eco-Friendly that he cannot try to read minds.",
+          "Do you mind some tea with mint?",
+          "Life's really \"Good\" that an AI cannot read minds.",
+          "Can you imagine life with mind-reader Artificial Intelligences?",
+          "AI is not gonna read minds soon.",
+          "It will be better, but not now.",
+        ];
+        const fillRequest = fillRequests[Math.floor(Math.random() * fillRequests.length)];
+        var underl = document.getElementById("output").style.textDecoration;
+        document.getElementById("output").style.textDecoration = "underline";
+        document.getElementById("output").innerText = fillRequest;
+        document.getElementById("submit").disabled = true;
+        await delay(2500);
+        document.getElementById("output").style.textDecoration = underl;
+        document.getElementById("output").innerText = current;
+        document.getElementById("submit").disabled = false;
+        message = null;
+      }
+    }
+
+    function displayImage() {
+      const fileInput = document.getElementById('fileInput');
+      const imageElement = document.getElementById('image');
+
+      if (fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+          imageElement.src = e.target.result;
+        };
+
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function displayText() {
+      let reader = new FileReader();
+      reader.onload = function () {
+        document.getElementById('textcontainer').textContent = reader.result;
+      };
+      reader.readAsText(document.getElementById("fileInput").files[0]);
+    }
+
+    async function f2() {
+      if (document.getElementById("fileInput").files.length == 0) {
+        if (light) {
+          document.getElementById("forfile").style.color = "rgba(0, 0, 0, 1)";
+        }
+        else if (!light) {
+          document.getElementById("forfile").style.color = "rgba(255, 255, 0, 1)";
+        }
+        document.getElementById("image").hidden = true;
+        document.getElementById("textcontainer").hidden = true;
+      }
+      else {
+        document.getElementById("forfile").style.color = "rgba(100, 100, 100, 1)";
+        switch (document.getElementById("fileInput").files[0].type) {
+          case "image/png":
+            document.getElementById("image").hidden = false;
+            displayImage();
+            document.getElementById("textcontainer").hidden = true;
+            break;
+          case "image/jpeg":
+            document.getElementById("image").hidden = false;
+            displayImage();
+            document.getElementById("textcontainer").hidden = true;
+            break;
+          case "image/jpg":
+            document.getElementById("image").hidden = false;
+            displayImage();
+            document.getElementById("textcontainer").hidden = true;
+            break;
+          case "image/webp":
+            document.getElementById("image").hidden = false;
+            displayImage();
+            document.getElementById("textcontainer").hidden = true;
+            break;
+          case "text/plain":
+            document.getElementById("image").hidden = true;
+            document.getElementById("textcontainer").hidden = false;
+            displayText();
+            break;
+          default:
+            document.getElementById("fileInput").value = null;
+        }
+      }
+
+      if (document.getElementById("input").value.trimStart() != "") {
+        document.getElementById("ptab").style.textDecoration = "line-through";
+        document.getElementById("tab").style.textDecoration = "line-through";
+      }
+      else {
+        document.getElementById("ptab").style.textDecoration = "none";
+        document.getElementById("tab").style.textDecoration = "none";
+      }
+
+      if (light == true) {
+        // Light mode
+        document.getElementById("formdiv").style.backgroundColor = "rgba(255, 255, 255, 0.8)"
+        document.getElementById("input").style.color = "black";
+        document.getElementById("output").style.color = "black";
+        var textarea = document.querySelector('textarea#input');
+        var Style = document.createElement('style');
+        Style.appendChild(document.createTextNode(`
+            textarea#input::-webkit-input-placeholder { color: rgba(0, 0, 0, 0.5); }
+            textarea#input:-moz-placeholder { color: rgba(0, 0, 0, 0.5); }
+            textarea#input::-moz-placeholder { color: rgba(0, 0, 0, 0.5); }
+            textarea#input:-ms-input-placeholder { color: rgba(0, 0, 0, 0.5); }
+          `));
+        document.head.appendChild(Style);
+        document.getElementById("input").style.backgroundColor = "white";
+        document.getElementById("ptab").style.color = "black";
+        document.getElementById("tab").style.color = "black";
+        document.querySelector("ul").style.backgroundColor = "rgb(0, 255, 149)";
+        document.querySelector("html").style.backgroundImage = "linear-gradient(to left, rgb(73, 151, 73), rgb(39, 216, 157))"
+        document.getElementsByClassName("current")[0].style.color = "rgba(0, 0, 0, 1)";
+        document.getElementsByClassName("not-current")[0].style.color = "rgba(0, 0, 0, 1)";
+        document.getElementsByClassName("not-current")[1].style.color = "rgba(0, 0, 0, 1)";
+        document.getElementsByClassName("not-current")[2].style.color = "rgba(0, 0, 0, 1)";
+        document.getElementsByClassName("not-current")[3].style.color = "rgba(0, 0, 0, 1)";
+        document.getElementById("darklight").style.backgroundColor = "rgb(0, 255, 149)";
+        document.getElementById("darklight").style.color = "black";
+        document.getElementById("lightdarkimg").src = "Assets/Moon.svg"
+      }
+      else if (light == false) {
+        // Dark mode
+        document.getElementById("formdiv").style.backgroundColor = "rgba(0, 0, 0, 0.8)"
+        document.getElementById("input").style.color = "yellow";
+        document.getElementById("output").style.color = "yellow";
+        var textarea = document.querySelector('textarea#input');
+        var Style = document.createElement('style');
+        Style.appendChild(document.createTextNode(`
+            textarea#input::-webkit-input-placeholder { color: rgba(255, 255, 0, 0.5); }
+            textarea#input:-moz-placeholder { color: rgba(255, 255, 0, 0.5); }
+            textarea#input::-moz-placeholder { color: rgba(255, 255, 0, 0.5); }
+            textarea#input:-ms-input-placeholder { color: rgba(255, 255, 0, 0.5); }
+          `));
+        document.head.appendChild(Style);
+        document.getElementById("lightdarkimg").src = "Assets/Sun.svg"
+        document.getElementById("input").style.backgroundColor = "rgb(50, 50, 50)";
+        document.getElementById("ptab").style.color = "yellow";
+        document.getElementById("tab").style.color = "yellow";
+        document.querySelector("html").style.backgroundImage = "linear-gradient(to left, rgb(23, 101, 23), rgb(0, 166, 100))";
+        document.querySelector("ul").style.backgroundColor = "rgb(70, 124, 0)";
+        document.getElementsByClassName("current")[0].style.color = "rgba(255, 255, 0, 1)";
+        document.getElementsByClassName("not-current")[0].style.color = "rgba(255, 255, 0, 1)";
+        document.getElementsByClassName("not-current")[1].style.color = "rgba(255, 255, 0, 1)";
+        document.getElementsByClassName("not-current")[2].style.color = "rgba(255, 255, 0, 1)";
+        document.getElementsByClassName("not-current")[3].style.color = "rgba(255, 255, 0, 1)";
+        document.getElementById("darklight").style.backgroundColor = "rgba(70, 124, 0, 1)";
+        document.getElementById("darklight").style.color = "yellow";
+      }
+      switch (light) {
+        case true:
+          document.getElementById("todoh").href = "todo.html?light=1";
+          document.getElementById("index").href = "index.html?light=1";
+          document.getElementById("leadh").href = "leaderboard.html?light=1";
+          document.getElementById("about").href = "about.html?light=1";
+          break;
+        case false:
+          document.getElementById("todoh").href = "todo.html?light=0";
+          document.getElementById("index").href = "index.html?light=0";
+          document.getElementById("leadh").href = "leaderboard.html?light=0";
+          document.getElementById("about").href = "about.html?light=0";
+          break
+      }
+    }
+
+    async function whileloop() {
+      {
+        var placeholders = [
+          "What are the endangered animals?",
+          "How can we protect the environment?",
+          "What are the properties of the desert habitat?",
+          "How heavy is the ocean waste?",
+          "How can we reduce the climate change?",
+          "Do diesel vehicles harm the environment?",
+          "Are tortoises endangered?",
+          "How can recycling affect on the amount of waste?",
+          "What are the layers of the Atmosphere?",
+          "When was COP 28? And summarize it.",
+        ];
+        var placeholder = placeholders[Math.floor(Math.random() * placeholders.length)];
+        document.getElementById("input").placeholder = "Eco-Message\n\"" + placeholder + "\"";
+        window.addEventListener('keydown', (e) => {
+          if (e.key == "Tab") {
+            if (document.getElementById("input").value.trimStart() == "") {
+              document.getElementById("input").value = placeholders[Math.floor(Math.random() * placeholders.length)];
+            }
+          }
+          if (e.key == "Enter" && !document.getElementById("submit").disabled) {
+            runner();
+          }
+        });
+
+        await delay(1250);
+      }
+      whileloop();
+    }
+
+    whileloop();
+    while (true) {
+      f2();
+      await delay(1)
+    }
+  </script>
+</body>
+
+</html>

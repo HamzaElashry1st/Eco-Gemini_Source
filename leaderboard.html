@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <link rel="shortcut icon" href="Assets/Gemini.svg" type="image/x-icon">
+  <title>Leaderboard - Eco-Gemini</title>
+</head>
+
+<body>
+  <header>
+    <button id="darklight"><img id="lightdarkimg" src="Assets/Moon.svg" style="margin-bottom: -4.5px;" height="25"
+        width="25"> Switch Mode</button>
+    <ul id="end">
+      <li><a id="index" href="index.html" class="not-current"><img src="Assets/Home.svg" height="25" width="25"
+            style="margin-bottom: -4px;"> Home</a></li>
+      <li><a id="ecohr" href="eco-gemini.html" class="not-current"><img src="Assets/Gemini.svg" height="25" width="25"
+            style="margin-bottom: -4px;"> Eco-Gemini</a></li>
+      <li><a id="todoh" href="todo.html" class="not-current"><img src="Assets/Todo.svg" height="25" width="25"
+            style="margin-bottom: -4px;"> To Do</a></li>
+      <li><a id="daily" href="daily.html" class="not-current"><img src="Assets/Quiz.svg" height="25" width="25"
+            style="margin-bottom: -4px;"> Daily
+          Quiz</a></li>
+      <li><a class="current"><img src="Assets/Leaderboard.svg" class="curimg" height="25" width="25"
+            style="margin-bottom: -4px; opacity: 0.5;"> Leaderboard</a></li>
+      <li><a id="about" href="about.html" class="not-current"><img src="Assets/About.svg" height="25" width="25"
+            style="margin-bottom: -4px;"> About</a></li>
+    </ul>
+  </header>
+  <div id="formdiv">
+    <h1 class="main">Leaderboard</h1>
+    <a id="record">Beat the record</a>
+    <!-- OLD VERSION WAS <marquee behavior="alternate" direction="right" id="scoreid"></marquee> -->
+    <p id="scoreid"></p>
+    <table style="width: 90%; margin: auto;">
+      <tr>
+        <th>Place</th>
+        <th>Name</th>
+        <th>Score</th>
+        <th>Duration</th>
+        <th>Source</th>
+      </tr>
+      <tr>
+        <th>1st</td>
+        <td id="1stn">.....</td>
+        <td id="1sts">.....</td>
+        <td id="1std">.....</td>
+        <td id="1str">.....</td>
+      </tr>
+      <tr>
+        <th>2nd</td>
+        <td id="2ndn">.....</td>
+        <td id="2nds">.....</td>
+        <td id="2ndd">.....</td>
+        <td id="2ndr">.....</td>
+      </tr>
+      <tr>
+        <th>3rd</td>
+        <td id="3rdn">.....</td>
+        <td id="3rds">.....</td>
+        <td id="3rdd">.....</td>
+        <td id="3ndr">.....</td>
+      </tr>
+      <tr>
+        <th>4th</td>
+        <td id="4thn">.....</td>
+        <td id="4ths">.....</td>
+        <td id="4thd">.....</td>
+        <td id="4thr">.....</td>
+      </tr>
+      <tr>
+        <th>5th</td>
+        <td id="5thn">.....</td>
+        <td id="5ths">.....</td>
+        <td id="5thd">.....</td>
+        <td id="5thr">.....</td>
+      </tr>
+      <tr>
+    </table>
+    <br>
+  </div>
+  <script type="module">
+    setDayCookie("test", "TESTVAL");
+
+    window.addEventListener("keydown", (e) => {
+      if (e.keyCode == 9) {
+        e.preventDefault();
+      }
+    });
+
+    function setDayCookie(cname, cvalue) {
+      var now = new Date();
+      var expire = new Date();
+
+      expire.setFullYear(now.getFullYear());
+      expire.setMonth(now.getMonth());
+      expire.setDate(now.getDate() + 1);
+      expire.setHours(0);
+      expire.setMinutes(0);
+      expire.setSeconds(0);
+
+      var expires = "expires=" + expire.toString();
+      document.cookie = cname + "=" + cvalue + "; " + expires + "; path=/";
+    }
+
+    function getCookie(cname) {
+      let name = cname + "=";
+      let decodedCookie = decodeURIComponent(document.cookie);
+      let ca = decodedCookie.split(';');
+      for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) == ' ') {
+          c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+          return c.substring(name.length, c.length);
+        }
+      }
+      return "";
+    }
+
+    function checkCookie(cname) {
+      let cookie = getCookie(cname);
+      if (cookie != "") {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    window.addEventListener("keydown", (e) => {
+      if (e.ctrlKey && e.key === "s") {
+        e.preventDefault();
+      }
+    });
+
+    const endl = "%0D%0A";
+
+    if (checkCookie("points") || checkCookie("pointd")) {
+      document.getElementById("scoreid").textContent = "Points: " + (Number(getCookie("points")) + Number(getCookie("pointd")));
+      document.getElementById("record").href = "mailto:hmztalshry98@gmail.com?subject=Leaderboard Record&body=Name: " + getCookie("username") + endl + "Points: " + endl + "Duration: " + endl + "Source: ";
+    }
+    else {
+      document.getElementById("scoreid").textContent = "Points: 0";
+      document.getElementById("record").style.textDecoration = "line-through";
+      if (!checkCookie("test")) {
+        document.getElementById("record").textContent = "Cookies are not enabled.";
+      }
+      else {
+        document.getElementById("record").textContent = "Visit Eco-To-Do page or the Daily Quiz at least once to create the cookies.";
+      }
+    }
+
+        var list = ["button", "label", "a"];
+          list.forEach(element => {
+            document.querySelectorAll(element).forEach(html => {
+              html.addEventListener("click", () => new Audio("Assets/Click.mp3").play());
+            })
+          })
+
+    async function fetchDataFromGitHub(URLAddress, index, indexnum, s_n_d_r) {
+      try {
+        const response = await fetch(URLAddress, {
+        });
+        const data = await response.text();
+        console.log(data.split("\n")[indexnum]);
+        document.getElementById(index + s_n_d_r).textContent = data.split("\n")[indexnum];
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+
+    if (checkCookie("previous")) {
+      document.querySelectorAll("a")[Number(getCookie("previous"))].classList.add("previous");
+    }
+
+    setDayCookie("previous", "4");
+
+    Promise.resolve().then(async function () {
+      for (let index = 0; index < 4; index++) {
+        var keyword;
+        switch (index) {
+          case 0:
+            keyword = "1st";
+            break;
+          case 1:
+            keyword = "2nd";
+            break;
+          case 2:
+            keyword = "3rd";
+            break;
+          case 3:
+            keyword = "4th";
+            break;
+          case 4:
+            keyword = "5th";
+            break;
+        }
+
+        const URL = "https://raw.githubusercontent.com/HamzaElashry1st/Eco-Gemini/main/";
+
+        fetchDataFromGitHub(URL + "names.txt" /* Change the link if you want */, keyword, index, "n");
+        fetchDataFromGitHub(URL + "scores.txt" /* Change the link if you want */, keyword, index, "s");
+        fetchDataFromGitHub(URL + "durations.txt" /* Change the link if you want */, keyword, index, "d");
+        fetchDataFromGitHub(URL + "sources.txt" /* Change the link if you want */, keyword, index, "r");
+      }
+    });
+
+    async function visChange0() {
+      document.getElementById("formdiv").style.opacity = "0";
+      document.getElementById("formdiv").style.animationName = "curback";
+      document.getElementById("formdiv").style.animationDuration = "0.2s";
+    }
+
+    async function visChange1() {
+      document.getElementById("formdiv").style.opacity = "1";
+      document.getElementById("formdiv").style.animationName = "revcurback";
+      document.getElementById("formdiv").style.animationDuration = "0.19s";
+    }
+
+    document.getElementById("index").addEventListener("mouseover", () => visChange0())
+    document.getElementById("index").addEventListener("mouseleave", () => visChange1())
+    document.getElementById("ecohr").addEventListener("mouseover", () => visChange0())
+    document.getElementById("ecohr").addEventListener("mouseleave", () => visChange1())
+    document.getElementById("todoh").addEventListener("mouseover", () => visChange0())
+    document.getElementById("todoh").addEventListener("mouseleave", () => visChange1())
+    document.getElementById("daily").addEventListener("mouseover", () => visChange0())
+    document.getElementById("daily").addEventListener("mouseleave", () => visChange1())
+    document.getElementById("about").addEventListener("mouseover", () => visChange0())
+    document.getElementById("about").addEventListener("mouseleave", () => visChange1())
+
+    var light;
+    if (!checkCookie("light")) {
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        light = false;
+      }
+      else {
+        light = true;
+      }
+    }
+    else {
+      light = (getCookie("light").toLowerCase().trimStart() === "true");
+    }
+
+    const delay = ms => new Promise(res => setTimeout(res, ms));
+    document.getElementById("darklight").addEventListener("click", () => light = !light)
+    var animationOnce = !light;
+
+    async function f2() {
+      setDayCookie("light", light);
+      if (light) { // Light mode
+        document.querySelector("table").style.borderColor = "rgba(0, 0, 0)";
+        for (let index = 0; index < document.querySelectorAll("th").length; index++) {
+          const element = document.querySelectorAll("th")[index];
+          element.style.borderColor = "rgb(0, 0, 0)"
+          element.style.color = "rgb(0, 0, 0)"
+        }
+        for (let index = 0; index < document.querySelectorAll("td").length; index++) {
+          const element = document.querySelectorAll("td")[index];
+          element.style.borderColor = "rgb(0, 0, 0)";
+          element.style.color = "rgb(0, 0, 0)"
+        }
+        document.getElementById("record").style.color = "rgb(0, 0, 0)";
+        document.getElementById("scoreid").style.color = "rgb(0, 0, 0)";
+        document.getElementById("formdiv").style.backgroundColor = "rgba(255, 255, 255, 0.8)"
+        document.querySelector("ul").style.backgroundColor = "rgb(0, 255, 149)";
+        document.getElementsByClassName("current")[0].style.color = "rgba(0, 0, 0, 1)";
+        document.getElementsByClassName("not-current")[0].style.color = "rgba(0, 0, 0, 1)";
+        document.getElementsByClassName("not-current")[1].style.color = "rgba(0, 0, 0, 1)";
+        document.getElementsByClassName("not-current")[2].style.color = "rgba(0, 0, 0, 1)";
+        document.getElementsByClassName("not-current")[3].style.color = "rgba(0, 0, 0, 1)";
+        document.getElementsByClassName("not-current")[4].style.color = "rgba(0, 0, 0, 1)";
+        document.getElementById("darklight").style.backgroundColor = "rgb(0, 255, 149)";
+        document.getElementById("darklight").style.color = "black";
+        document.getElementById("lightdarkimg").src = "Assets/Moon.svg";
+        document.querySelector("html").style.backgroundImage = "linear-gradient(to left, rgb(73, 151, 73), rgb(39, 216, 157))";
+        if (animationOnce) {
+          document.getElementById("darklight").disabled = true;
+          document.querySelector("html").style.animation = "global 0.25s ease reverse";
+          await delay(250);
+          document.querySelector("html").style.animation = "none";
+          animationOnce = false;
+          document.getElementById("darklight").disabled = false;
+        }
+      }
+      else if (!light) { // Dark mode
+        document.querySelector("table").style.borderColor = "rgb(255, 255, 0)";
+        for (let index = 0; index < document.querySelectorAll("th").length; index++) {
+          const element = document.querySelectorAll("th")[index];
+          element.style.borderColor = "rgb(255, 255, 0)"
+          element.style.color = "rgb(255, 255, 0)"
+        }
+        for (let index = 0; index < document.querySelectorAll("td").length; index++) {
+          const element = document.querySelectorAll("td")[index];
+          element.style.borderColor = "rgb(255, 255, 0)"
+          element.style.color = "rgb(255, 255, 0)"
+        }
+        document.getElementById("record").style.color = "rgb(255, 255, 0)";
+        document.getElementById("scoreid").style.color = "rgb(255, 255, 0)";
+        document.getElementById("formdiv").style.backgroundColor = "rgba(0, 0, 0, 0.8)"
+        document.querySelector("ul").style.backgroundColor = "rgb(70, 124, 0)";
+        document.getElementsByClassName("current")[0].style.color = "rgba(255, 255, 0, 1)";
+        document.getElementsByClassName("not-current")[0].style.color = "rgba(255, 255, 0, 1)";
+        document.getElementsByClassName("not-current")[1].style.color = "rgba(255, 255, 0, 1)";
+        document.getElementsByClassName("not-current")[2].style.color = "rgba(255, 255, 0, 1)";
+        document.getElementsByClassName("not-current")[3].style.color = "rgba(255, 255, 0, 1)";
+        document.getElementsByClassName("not-current")[4].style.color = "rgba(255, 255, 0, 1)";
+        document.getElementById("darklight").style.backgroundColor = "rgba(70, 124, 0, 1)";
+        document.getElementById("darklight").style.color = "yellow";
+        document.getElementById("lightdarkimg").src = "Assets/Sun.svg"
+        document.querySelector("html").style.backgroundImage = "linear-gradient(to left, rgb(23, 101, 23), rgb(0, 166, 100))";
+        if (!animationOnce) {
+          animationOnce = true;
+          document.querySelector("html").style.animation = "global 0.25s ease";
+          document.getElementById("darklight").disabled = true;
+          await delay(250);
+          document.querySelector("html").style.animation = "none";
+          document.getElementById("darklight").disabled = false;
+        }
+      }
+    }
+    while (true) {
+      f2();
+      await delay(1);
+    }
+  </script>
+</body>
+
+</html>

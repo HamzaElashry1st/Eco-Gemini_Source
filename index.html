@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <link rel="shortcut icon" href="Assets/Gemini.svg" type="image/x-icon">
+  <title>Landing Page - Eco-Gemini</title>
+</head>
+
+<body>
+  <header>
+    <button id="darklight"><img id="lightdarkimg" src="Assets/Moon.svg" style="margin-bottom: -4.5px;" height="25"
+        width="25"> Switch Mode</button>
+    <ul id="end">
+      <li><a class="current"><img src="Assets/Home.svg" class="curimg" height="25" width="25"
+            style="margin-bottom: -4px; opacity: 0.5;"> Home</a></li>
+      <li><a id="ecohr" href="eco-gemini.html" class="not-current"><img src="Assets/Gemini.svg" height="25" width="25"
+            style="margin-bottom: -4px;"> Eco-Gemini</a></li>
+      <li><a id="todoh" href="todo.html" class="not-current"><img src="Assets/Todo.svg" height="25" width="25"
+            style="margin-bottom: -4px;"> To Do</a></li>
+      <li><a id="daily" href="daily.html" class="not-current"><img src="Assets/Quiz.svg" height="25" width="25"
+            style="margin-bottom: -4px;"> Daily
+          Quiz</a></li>
+      <li><a id="leadh" href="leaderboard.html" class="not-current"><img src="Assets/Leaderboard.svg" height="25"
+            width="25" style="margin-bottom: -4px;"> Leaderboard</a></li>
+      <li><a id="about" href="about.html" class="not-current"><img src="Assets/About.svg" height="25" width="25"
+            style="margin-bottom: -4px;"> About</a></li>
+    </ul>
+  </header>
+  <dialog id="cookies">
+    <h1>Cookies, which are required for the saving your preferences, settings, and tasks, are disabled.</h1>
+    <button id="okbtn"><img src="Assets/Close.svg"></button>
+  </dialog>
+  <div id="formdiv">
+    <h1 class="main">Landing Page</h1>
+    <p id="p">Hello, there! This is the landing page for the web app.</p>
+    <a id="aa" class="not-current">Get Started</a>
+  </div>
+  <script type="module">
+    window.addEventListener("keydown", (e) => {
+      if (e.keyCode == 9) {
+        e.preventDefault();
+      }
+    });
+
+    window.addEventListener("keydown", (e) => {
+      if (e.ctrlKey && e.key === "s") {
+        e.preventDefault();
+      }
+    });
+
+    document.getElementById("aa").addEventListener("mousedown", async function () {
+      visChange0();
+      await delay(250);
+      window.location.href = "eco-gemini.html";
+    });
+
+    var light;
+    if (!checkCookie("light")) {
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        light = false;
+      }
+      else {
+        light = true;
+      }
+    }
+    else {
+      light = (getCookie("light").toLowerCase().trimStart() === "true");
+    }
+
+    setDayCookie("test", "TESTVALUE");
+
+    if (checkCookie("previous")) {
+      document.querySelectorAll("a")[Number(getCookie("previous"))].classList.add("previous");
+    }
+
+    setDayCookie("previous", "0");
+
+    if (getCookie("test") !== "TESTVALUE") {
+      document.getElementById("cookies").show();
+      document.getElementById("okbtn").addEventListener("click", async function () {
+        document.getElementById("cookies").style.opacity = "0";
+        await delay(500);
+        document.getElementById("cookies").close();
+      });
+    }
+
+    /*
+      Not Used! Delete cookie:
+      function deleteCookie(cname) {
+        document.cookie = cname + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      }
+    */
+
+    function getCookie(cname) {
+      let name = cname + "=";
+      let decodedCookie = decodeURIComponent(document.cookie);
+      let ca = decodedCookie.split(';');
+      for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) == ' ') {
+          c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+          return c.substring(name.length, c.length);
+        }
+      }
+      return "";
+    }
+
+    function setDayCookie(cname, cvalue) {
+      var now = new Date();
+      var expire = new Date();
+
+      expire.setFullYear(now.getFullYear());
+      expire.setMonth(now.getMonth());
+      expire.setDate(now.getDate() + 1);
+      expire.setHours(0);
+      expire.setMinutes(0);
+      expire.setSeconds(0);
+
+      var expires = "expires=" + expire.toString();
+      document.cookie = cname + "=" + cvalue + "; " + expires + "; path=/";
+    }
+
+    var list = ["button", "label", "a"];
+    list.forEach(element => {
+      document.querySelectorAll(element).forEach(html => {
+        html.addEventListener("click", () => new Audio("Assets/Click.mp3").play());
+      })
+    })
+
+    function checkCookie(cname) {
+      let cookie = getCookie(cname);
+      if (cookie != "") {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    if (checkCookie("username")) {
+      document.getElementById("p").innerText = "Hello, " + getCookie("username") + "! This is the landing page for the web app."
+    }
+    else {
+      document.getElementById("p").innerText = "Hello, there! This is the landing page for the web app."
+    }
+    const delay = ms => new Promise(res => setTimeout(res, ms));
+    document.getElementById("darklight").addEventListener("click", () => light = !light)
+
+    async function visChange0() {
+      document.getElementById("formdiv").style.opacity = "0";
+      document.getElementById("formdiv").style.animationName = "curback";
+      document.getElementById("formdiv").style.animationDuration = "0.2s";
+    }
+
+    async function visChange1() {
+      document.getElementById("formdiv").style.opacity = "1";
+      document.getElementById("formdiv").style.animationName = "revcurback";
+      document.getElementById("formdiv").style.animationDuration = "0.19s";
+    }
+
+    document.getElementById("todoh").addEventListener("mouseover", () => visChange0())
+    document.getElementById("todoh").addEventListener("mouseleave", () => visChange1())
+    document.getElementById("ecohr").addEventListener("mouseover", () => visChange0())
+    document.getElementById("ecohr").addEventListener("mouseleave", () => visChange1())
+    document.getElementById("leadh").addEventListener("mouseover", () => visChange0())
+    document.getElementById("leadh").addEventListener("mouseleave", () => visChange1())
+    document.getElementById("daily").addEventListener("mouseover", () => visChange0())
+    document.getElementById("daily").addEventListener("mouseleave", () => visChange1())
+    document.getElementById("about").addEventListener("mouseover", () => visChange0())
+    document.getElementById("about").addEventListener("mouseleave", () => visChange1())
+
+    var animationOnce = !light;
+
+    async function f2() {
+      setDayCookie("light", light);
+      if (light) { // Light mode
+        document.getElementById("formdiv").style.backgroundColor = "rgba(255, 255, 255, 0.8)"
+        document.querySelector("ul").style.backgroundColor = "rgb(0, 255, 149)";
+        document.getElementsByClassName("current")[0].style.color = "rgba(0, 0, 0, 1)";
+        document.getElementsByClassName("not-current")[0].style.color = "rgba(0, 0, 0, 1)";
+        document.getElementsByClassName("not-current")[1].style.color = "rgba(0, 0, 0, 1)";
+        document.getElementsByClassName("not-current")[2].style.color = "rgba(0, 0, 0, 1)";
+        document.getElementsByClassName("not-current")[3].style.color = "rgba(0, 0, 0, 1)";
+        document.getElementsByClassName("not-current")[4].style.color = "rgba(0, 0, 0, 1)";
+        document.getElementById("darklight").style.backgroundColor = "rgb(0, 255, 149)";
+        document.getElementById("darklight").style.color = "black";
+        document.getElementById("p").style.color = "black";
+        document.getElementById("lightdarkimg").src = "Assets/Moon.svg";
+        document.querySelector("html").style.backgroundImage = "linear-gradient(to left, rgb(73, 151, 73), rgb(39, 216, 157))";
+        if (animationOnce) {
+          document.getElementById("darklight").disabled = true;
+          document.querySelector("html").style.animation = "global 0.25s ease reverse";
+          await delay(250);
+          document.querySelector("html").style.animation = "none";
+          animationOnce = false;
+          document.getElementById("darklight").disabled = false;
+        }
+      }
+      else if (!light) { // Dark mode
+        document.getElementById("formdiv").style.backgroundColor = "rgba(0, 0, 0, 0.8)"
+        document.querySelector("ul").style.backgroundColor = "rgb(70, 124, 0)";
+        document.getElementsByClassName("current")[0].style.color = "rgba(255, 255, 0, 1)";
+        document.getElementsByClassName("not-current")[0].style.color = "rgba(255, 255, 0, 1)";
+        document.getElementsByClassName("not-current")[1].style.color = "rgba(255, 255, 0, 1)";
+        document.getElementsByClassName("not-current")[2].style.color = "rgba(255, 255, 0, 1)";
+        document.getElementsByClassName("not-current")[3].style.color = "rgba(255, 255, 0, 1)";
+        document.getElementsByClassName("not-current")[4].style.color = "rgba(255, 255, 0, 1)";
+        document.getElementById("darklight").style.backgroundColor = "rgba(70, 124, 0, 1)";
+        document.getElementById("darklight").style.color = "yellow";
+        document.getElementById("p").style.color = "yellow";
+        document.getElementById("lightdarkimg").src = "Assets/Sun.svg"
+        document.querySelector("html").style.backgroundImage = "linear-gradient(to left, rgb(23, 101, 23), rgb(0, 166, 100))";
+        if (!animationOnce) {
+          animationOnce = true;
+          document.querySelector("html").style.animation = "global 0.25s ease";
+          document.getElementById("darklight").disabled = true;
+          await delay(250);
+          document.querySelector("html").style.animation = "none";
+          document.getElementById("darklight").disabled = false;
+        }
+      }
+    }
+    while (true) {
+      f2();
+      await delay(1);
+    }
+  </script>
+</body>
+
+</html>
