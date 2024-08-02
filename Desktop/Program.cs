@@ -119,5 +119,6 @@ Listen(
     $"http://127.0.0.1:{port}/Assets/Close.svg",
     $"http://127.0.0.1:{port}/Assets/Download.svg",
     $"http://127.0.0.1:{port}/Assets/Reset.svg",
-    $"http://127.0.0.1:{port}/Assets/Leaderboard.svg"
+    $"http://127.0.0.1:{port}/Assets/Leaderboard.svg",
+    $"http://127.0.0.1:{port}/DEVELOPMENTAPIKEYS/APIKEYFOLDERCONTAINER/API_KEY.html"
 ]);
