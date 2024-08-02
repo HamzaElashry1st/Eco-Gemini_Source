@@ -266,17 +266,32 @@
 
       const prompt = message;
 
-      const result = await model.generateContent(prompt);
-      const response = await result.response;
-      const text = response.text();
-
+      var result;
+      var response;
+      var errorBool;
+      var text;
+      try {
+        result = await model.generateContent(prompt);
+        response = await result.response;
+        text = response.text();
+        errorBool = false;
+      }
+      catch (error) {
+        text = "Invalid";
+        errorBool = true;
+      }
       if (String(text).toLowerCase().replace("\n", "") === "true") {
         setDayCookie("tsk" + (index + 1) + "txt", document.getElementsByClassName("tskinp")[index].value);
         spcalert2("Saved!", index);
         setDayCookie("points", point);
       }
       else {
-        spcalert("This task is not an eco-task.", index);
+        if (!errorBool) {
+          spcalert("This task is not an eco-task.", index);
+        }
+        else {
+          spcalert("Invalid API Key.", index);
+        }
       }
     }
     //
@@ -298,39 +313,41 @@
     }
 
     async function save() {
-      for (let index1 = 0; index1 < document.getElementsByClassName("tskinp").length - 1; index1++) {
-        for (let index2 = (index1 + 1); index2 < document.getElementsByClassName("tskinp").length - 1; index2++) {
-          if (filter(document.getElementsByClassName("tskinp")[index1].value) === filter(document.getElementsByClassName("tskinp")[index2].value)) {
-            document.getElementsByClassName("tskinp")[index2].value = "";
+      if (!document.getElementById("ptab").hidden) {
+        for (let index1 = 0; index1 < document.getElementsByClassName("tskinp").length - 1; index1++) {
+          for (let index2 = (index1 + 1); index2 < document.getElementsByClassName("tskinp").length - 1; index2++) {
+            if (filter(document.getElementsByClassName("tskinp")[index1].value) === filter(document.getElementsByClassName("tskinp")[index2].value)) {
+              document.getElementsByClassName("tskinp")[index2].value = "";
+            }
           }
         }
-      }
-      if (navigator.onLine) {
-        if (available) {
-          available = false;
-          for (let index = 0; index <= 9; index++) {
-            setDayCookie("tsk" + (index + 1), document.getElementById("tsk" + (index + 1) + "c").checked)
-            if (!document.getElementById("tsk" + (index + 1) + "d").hidden) {
-              if (document.getElementsByClassName("tskinp")[index].value.trimStart() !== "") {
-                run(document.getElementsByClassName("tskinp")[index].value, index);
-              } else {
-                spcalert("This task is set to empty.", index);
-                setDayCookie("tsk" + (index + 1) + "txt", "")
+        if (navigator.onLine) {
+          if (available) {
+            available = false;
+            for (let index = 0; index <= 9; index++) {
+              setDayCookie("tsk" + (index + 1), document.getElementById("tsk" + (index + 1) + "c").checked)
+              if (!document.getElementById("tsk" + (index + 1) + "d").hidden) {
+                if (document.getElementsByClassName("tskinp")[index].value.trimStart() !== "") {
+                  run(document.getElementsByClassName("tskinp")[index].value, index);
+                } else {
+                  spcalert("This task is set to empty.", index);
+                  setDayCookie("tsk" + (index + 1) + "txt", "")
+                }
               }
             }
           }
         }
+        else {
+          document.getElementById("pfil").innerText = "Please, check your internet connection.";
+          document.getElementById("pfil").hidden = false;
+          document.getElementById("ptab").hidden = true;
+          await delay(1250);
+          document.getElementById("pfil").hidden = true;
+          document.getElementById("ptab").hidden = false;
+        }
+        available = true;
+        notAvailable(0);
       }
-      else {
-        document.getElementById("pfil").innerText = "Please, check your internet connection.";
-        document.getElementById("pfil").hidden = false;
-        document.getElementById("ptab").hidden = true;
-        await delay(1250);
-        document.getElementById("pfil").hidden = true;
-        document.getElementById("ptab").hidden = false;
-      }
-      available = true;
-      notAvailable(0);
     }
     //
     for (let index = 0; index <= 9; index++) {
