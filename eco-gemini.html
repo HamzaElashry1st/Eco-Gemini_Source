@@ -406,15 +406,15 @@
       Promise.resolve().then(async function () {
         while (running) {
           if (running) {
-            document.getElementsByClassName("output")[document.getElementsByClassName("output").length - 1].innerHTML = "<p><img src=\"Assets/Gemini.svg\">Generating.</p><br>";
+            document.getElementsByClassName("output")[document.getElementsByClassName("output").length - 1].innerHTML = "<p><img src=\"Assets/Gemini.svg\">Generating.<div class=\"loading\"></div></p><br>";
           }
           await delay(500);
           if (running) {
-            document.getElementsByClassName("output")[document.getElementsByClassName("output").length - 1].innerHTML = "<p><img src=\"Assets/Gemini.svg\">Generating..</p><br>";
+            document.getElementsByClassName("output")[document.getElementsByClassName("output").length - 1].innerHTML = "<p><img src=\"Assets/Gemini.svg\">Generating..<div class=\"loading\"></div></p><br>";
           }
           await delay(500);
           if (running) {
-            document.getElementsByClassName("output")[document.getElementsByClassName("output").length - 1].innerHTML = "<p><img src=\"Assets/Gemini.svg\">Generating...</p><br>";
+            document.getElementsByClassName("output")[document.getElementsByClassName("output").length - 1].innerHTML = "<p><img src=\"Assets/Gemini.svg\">Generating...<div class=\"loading\"></div></p><br>";
           }
           await delay(500);
         };

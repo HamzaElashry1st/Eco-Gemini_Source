@@ -423,6 +423,28 @@ input[type="radio"]:checked {
   }
 }
 
+.loading {
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #3498db;
+  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+  animation: spin 0.5s linear infinite;
+  float: right;
+  margin-top: -17%;
+  margin-right: 2%;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 select {
   font-family: "Cascadia Code";
   background-color: #9df;
