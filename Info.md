@@ -2,10 +2,10 @@
 > ## Project creation start date:  **June 25th 2024**.
 > ## Project creation end date:  **July 14th 2024**.
 > ## Additional work (Troubleshooting - Additional features) start date: **July 15th 2024**
-> ## Additional work (Troubleshooting - Additional features) end date: **July --th 2024**
-> ## Project video creation date: July --th 2024.
-> ## Project pages: 5.
-> ## Special features: Cookies (Used in each page - 31 cookies in total (Not supported in Internet Explorer because it didn't support more than 20 cookies.)), Fetch from GitHub (Used two times).
+> ## Additional work (Troubleshooting - Additional features) end date: **August 3rd 2024**
+> ## Project video creation date: August 2nd 2024.
+> ## Project pages: 6.
+> ## Special features: Cookies (Used in each page - 32 cookies in total (Not supported in Internet Explorer because it didn't support more than 20 cookies.)), Fetch from GitHub (Used two times).
 > ## Technologies: Web (Hypertext markup language, Cascading Style Sheets, and JavaScript), Desktop (C-Sharp, Extensible Application Markup Language, Windows Presentation Foundation), Microsoft.Web.WebView2 and GitHub.
 > ## Changelog: (Read from Eco-Gemini page)
 > ## Gemini API usage: 3 times in the website.
