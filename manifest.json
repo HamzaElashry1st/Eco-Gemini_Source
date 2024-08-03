@@ -1,0 +1,10 @@
+{
+    "name": "Eco-Gemini",
+    "icons": [
+        {
+            "src": "Assets/Gemini.svg",
+            "type": "image/svg+xml",
+            "sizes": "512x512"
+        }
+    ]
+}
