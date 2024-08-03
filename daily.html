@@ -34,6 +34,13 @@
     <p id="points"></p>
     <div id="quiz"></div>
   </div>
+  <script type="importmap">
+        {
+          "imports": {
+            "@google/generative-ai": "https://esm.run/@google/generative-ai"
+          }
+        }
+      </script>
   <script type="module">
     var list = ["button", "label", "a"];
     list.forEach(element => {
@@ -51,32 +58,119 @@
     setDayCookie("test", "TESTVALUE")
 
     var points;
-    async function fetchGitHubQuiz(URLAddress) {
-      try {
-        const response = await fetch(URLAddress, {
-        });
-        const data = await response.text();
-        console.log(data);
-        document.getElementById("quiz").innerHTML = data;
-        for (let index = 0; index <= 8; index++) {
-          if (checkCookie("select" + (index + 1))) {
-            document.getElementById(getCookie("select" + (index + 1))).checked = true;
-          }
+
+    async function getPrev() {
+      for (let index = 0; index <= 8; index++) {
+        if (checkCookie("select" + (index + 1))) {
+          document.getElementById(getCookie("select" + (index + 1))).checked = true;
         }
-        for (let index = 0; index <= 8; index++) {
-          if (document.getElementById("q" + (index + 1)).checked) {
-            save("direct")
-            break;
-          }
+      }
+      for (let index = 0; index <= 8; index++) {
+        if (document.getElementById("q" + (index + 1)).checked) {
+          save("direct")
+          break;
         }
-      } catch (error) {
-        console.error(error);
       }
     }
 
+    import { GoogleGenerativeAI } from "@google/generative-ai";
+
+    async function GetSpecial() {
+      const pathFetch = await fetch("RETIREDPATH.html", {
+      });
+      const pathHTML = await pathFetch.text();
+      const pathElement = document.createElement("html");
+      pathElement.innerHTML = pathHTML;
+      const path = pathElement.querySelector("p").innerText;
+      const DataFetch = await fetch(path, {
+      });
+      const data = await DataFetch.text();
+      const dataElement = document.createElement("html");
+      dataElement.innerHTML = data;
+      return dataElement.querySelector("p").innerText;
+    }
+
     Promise.resolve().then(async function () {
-      fetchGitHubQuiz("https://raw.githubusercontent.com/HamzaElashry1st/Eco-Gemini/main/daily.txt")
+      var genAI = new GoogleGenerativeAI(await GetSpecial())
+
+      const model = genAI.getGenerativeModel({
+        model: "gemini-1.5-flash",
+        systemInstruction: `
+        You must make random quizzes that are related to the environment, climate change, and endangered animals. Your quizzes should be in the form of
+      <div>
+  <!-- Question 1 -->
+  <p>Question 1</p>
+  <!-- Add class="correct" for the input type=\"radio\" elements which are correct, but don't repeat this sort of correct questions in your response. -->
+  <input type="radio" id="q1" class="correct" name="quiz1" value="mini-answer">
+  <label for="q1">Answer 1</label>
+  <br>
+  <input type="radio" id="q2" name="quiz1" value="mini-answer">
+  <label for="q2">Answer 2</label>
+  <br>
+  <input type="radio" id="q3" name="quiz1" value="mini-answer">
+  <label for="q3">Answer 3</label>
+  <br>
+  <!-- Question 2 -->
+  <p>Question 2</p>
+  <input type="radio" id="q4" name="quiz2" value="mini-answer">
+  <label for="q4">Answer 1</label>
+  <br>
+  <input type="radio" id="q5" class="correct" name="quiz2" value="mini-answer">
+  <label for="q5">Answer 2</label>
+  <br>
+  <input type="radio" id="q6" name="quiz2" value="mini-answer">
+  <label for="q6">Answer 3</label>
+  <!-- Question 3 -->
+  <p>Question 3</p>
+  <input type="radio" id="q7" name="quiz3" value="mini-answer">
+  <label for="q7">Answer 1</label>
+  <br>
+  <input type="radio" id="q8" class="correct" name="quiz3" value="mini-answer">
+  <label for="q8">Answer 2</label>
+  <br>
+  <input type="radio" id="q9" name="quiz3" value="mini-answer">
+  <label for="q9">Answer 3</label>
+</div>
+<br>
+
+The questions should be three with 3 answers each.
+Never take the sorting of the correct questions from the template. Just make them random.
+      `,
+      });
+
+      var error = false;
+      async function run() {
+        try {
+          result = await model.generateContent('');
+          response = await result.response;
+          var text = response.text();
+          return text;
+        }
+        catch {
+          error = true;
+          var text = "<div><p>Invalid API Key.</p></div><br>";
+          return text;
+        }
+      }
+
+      if (!checkCookie("quiz")) {
+        var AIResponse = (await run()).replace(/`/g, '').replace(/html/g, '');
+        document.querySelectorAll("div")[1].innerHTML = AIResponse;
+        if (!error) {
+          setDayCookie("quiz", encodeURIComponent(AIResponse));
+        }
+      }
+      else if (checkCookie("quiz")) {
+        if (!error) {
+          document.querySelectorAll("div")[1].innerHTML = getCookie("quiz");
+          getPrev();
+        }
+        else {
+          document.querySelectorAll("div")[1].innerHTML = await run();
+        }
+      }
     });
+
     var light;
 
     if (!checkCookie("light")) {

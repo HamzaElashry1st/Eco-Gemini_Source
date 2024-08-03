@@ -73,6 +73,11 @@ void Listen(string[] files)
         {
             response.ContentType = "text/css";
         }
+        else if (filePath.EndsWith(".mp3"))
+        {
+            response.ContentType = "audio/mpeg";
+        }
+        // ...
         else if (filePath == AppDomain.CurrentDomain.BaseDirectory)
         {
             buffer = File.ReadAllBytes($"{AppDomain.CurrentDomain.BaseDirectory}index.html");
@@ -120,5 +125,7 @@ Listen(
     $"http://127.0.0.1:{port}/Assets/Download.svg",
     $"http://127.0.0.1:{port}/Assets/Reset.svg",
     $"http://127.0.0.1:{port}/Assets/Leaderboard.svg",
+    $"http://127.0.0.1:{port}/Assets/Click.mp3",
+    $"http://127.0.0.1:{port}/Assets/Error.mp3",
     $"http://127.0.0.1:{port}/DEVELOPMENTAPIKEYS/APIKEYFOLDERCONTAINER/API_KEY.html"
 ]);
