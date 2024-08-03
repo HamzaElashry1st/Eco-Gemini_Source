@@ -427,6 +427,7 @@
         }
         catch (error) {
           result = error;
+          new Audio("Assets/Error.mp3").play();
           document.getElementsByClassName("output")[0].innerText = "Invalid API Key.";
           document.getElementsByClassName("output")[0].scrollIntoView();
           console.log(result);
@@ -440,6 +441,7 @@
         }
         catch (error) {
           result = error;
+          new Audio("Assets/Error.mp3").play();
           document.getElementsByClassName("output")[0].innerText = "Invalid API Key.";
           document.getElementsByClassName("output")[0].scrollIntoView();
           console.log(result);
@@ -936,9 +938,9 @@
               document.getElementById("input").value = placeholders[Math.floor(Math.random() * placeholders.length)];
             }
           }
-          if (e.key == "Enter" && !document.getElementById("submit").disabled) {
-            runner();
+          if (e.shiftKey && e.key == "Enter" && !document.getElementById("submit").disabled) {
             new Audio("Assets/Click.mp3").play();
+            runner();
           }
         });
 

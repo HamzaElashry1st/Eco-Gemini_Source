@@ -293,6 +293,9 @@
           spcalert("Invalid API Key.", index);
         }
       }
+      if (errorBool) {
+        new Audio("Assets/Error.mp3").play();
+      }
     }
     //
     function filter(target) {
@@ -366,6 +369,7 @@
 
     window.addEventListener("keydown", async function (e) {
       if (e.key == "Enter" && checkCookie("test")) {
+        new Audio("Assets/Click.mp3").play();
         save();
       }
     });

@@ -9,7 +9,9 @@
 <body style="background-color: white;">
     <p style="color: white; font-size: 0px; display: none;"></p>
     <script>
-        document.querySelector("p").style.color = document.querySelector("body").style.backgroundColor;
+        Proise.resolve().then(() => {
+            document.querySelector("p").style.color = document.querySelector("body").style.backgroundColor;
+        });
     </script>
 </body>
 
