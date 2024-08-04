@@ -442,6 +442,7 @@ a.context:hover {
   position: absolute;
   background-color: rgba(100, 100, 100, 0.5);
   filter: drop-shadow(12px 12px 2px rgba(25, 25, 25, 0.5));
+  backdrop-filter: blur(5px);
   border-radius: 20px;
   width: fit-content;
   z-index: 0;
