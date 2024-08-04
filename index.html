@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
-  <link rel="manifest" href="manifest.json" />
+  <link rel="manifest" href="manifest.json">
   <link rel="shortcut icon" href="Assets/Gemini.svg" type="image/x-icon">
   <title>Landing Page - Eco-Gemini</title>
 </head>
@@ -38,6 +38,21 @@
     <h1 class="main">Landing Page</h1>
     <p id="p">Hello, there! This is the landing page for the web app.</p>
     <a id="aa" class="not-current">Get Started</a>
+  </div>
+  <div id="contextmenu" hidden>
+    <a class="context" href="javascript:window.location.reload()">Refresh</a>
+    <hr>
+    <a class="context" href="index.html">Home</a>
+    <br>
+    <a class="context" href="eco-gemini.html">Eco-Gemini</a>
+    <br>
+    <a class="context" href="todo.html">To-Do</a>
+    <br>
+    <a class="context" href="daily.html">Daily quiz</a>
+    <br>
+    <a class="context" href="leaderboard.html">Leaderboard</a>
+    <br>
+    <a class="context" href="about.html">About</a>
   </div>
   <script type="module">
     window.addEventListener("keydown", (e) => {
@@ -152,12 +167,14 @@
     document.getElementById("darklight").addEventListener("click", () => light = !light)
 
     async function visChange0() {
+      document.getElementById("contextmenu").style.opacity = "0";
       document.getElementById("formdiv").style.opacity = "0";
       document.getElementById("formdiv").style.animationName = "curback";
       document.getElementById("formdiv").style.animationDuration = "0.2s";
     }
 
     async function visChange1() {
+      document.getElementById("contextmenu").style.opacity = "1";
       document.getElementById("formdiv").style.opacity = "1";
       document.getElementById("formdiv").style.animationName = "revcurback";
       document.getElementById("formdiv").style.animationDuration = "0.19s";
@@ -174,10 +191,49 @@
     document.getElementById("about").addEventListener("mouseover", () => visChange0())
     document.getElementById("about").addEventListener("mouseleave", () => visChange1())
 
+    // Context menu
+
+    async function navigate(url) {
+      visChange0();
+      await delay(250);
+      window.location.href = url;
+    }
+
+    window.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+      document.getElementById("contextmenu").style.left = e.clientX + 'px';
+      document.getElementById("contextmenu").style.top = e.clientY + 'px';
+      document.getElementById("contextmenu").hidden = false;
+    });
+
+    window.addEventListener("mousedown", (e) => {
+      if (e.button == 0) {
+        if (document.elementFromPoint(e.clientX, e.clientY) !== document.getElementById("contextmenu")) {
+          if (!document.elementFromPoint(e.clientX, e.clientY).classList.contains("context")) {
+            document.getElementById("contextmenu").hidden = true;
+          }
+        }
+      }
+    });
+
+    document.querySelectorAll(".context").forEach(element => {
+      element.addEventListener("click", async (e) => {
+        e.preventDefault();
+        visChange0();
+        await delay(250);
+        window.location.href = element.href;
+      })
+    });
+
+    // End
+
     var animationOnce = !light;
 
     async function f2() {
       setDayCookie("light", light);
+      document.querySelectorAll(".context").forEach(element => {
+        element.style.color = document.querySelector("p").style.color;
+      });
       if (light) { // Light mode
         document.getElementById("formdiv").style.backgroundColor = "rgba(255, 255, 255, 0.8)"
         document.querySelector("ul").style.backgroundColor = "rgb(0, 255, 149)";

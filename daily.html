@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
   <link rel="shortcut icon" href="Assets/Gemini.svg" type="image/x-icon">
   <title>Daily Quiz - Eco-Gemini</title>
 </head>
@@ -32,7 +33,25 @@
     <h1 class="main">Daily quiz</h1>
     <button id="save">Make a try</button>
     <p id="points"></p>
-    <div id="quiz"></div>
+    <fieldset>
+      <legend>Quiz</legend>
+      <div id="quiz"></div>
+    </fieldset>
+  </div>
+  <div id="contextmenu" hidden>
+    <a class="context" href="javascript:window.location.reload()">Refresh</a>
+    <hr>
+    <a class="context" href="index.html">Home</a>
+    <br>
+    <a class="context" href="eco-gemini.html">Eco-Gemini</a>
+    <br>
+    <a class="context" href="todo.html">To-Do</a>
+    <br>
+    <a class="context" href="daily.html">Daily quiz</a>
+    <br>
+    <a class="context" href="leaderboard.html">Leaderboard</a>
+    <br>
+    <a class="context" href="about.html">About</a>
   </div>
   <script type="importmap">
         {
@@ -141,8 +160,8 @@ Never take the sorting of the correct questions from the template. Just make the
       var error = false;
       async function run() {
         try {
-          result = await model.generateContent('');
-          response = await result.response;
+          var result = await model.generateContent('');
+          var response = await result.response;
           var text = response.text();
           return text;
         }
@@ -234,12 +253,14 @@ Never take the sorting of the correct questions from the template. Just make the
     const delay = ms => new Promise(res => setTimeout(res, ms));
 
     async function visChange0() {
+      document.getElementById("contextmenu").style.opacity = "0";
       document.getElementById("formdiv").style.opacity = "0";
       document.getElementById("formdiv").style.animationName = "curback";
       document.getElementById("formdiv").style.animationDuration = "0.2s";
     }
 
     async function visChange1() {
+      document.getElementById("contextmenu").style.opacity = "1";
       document.getElementById("formdiv").style.opacity = "1";
       document.getElementById("formdiv").style.animationName = "revcurback";
       document.getElementById("formdiv").style.animationDuration = "0.19s";
@@ -306,10 +327,51 @@ Never take the sorting of the correct questions from the template. Just make the
       }
     }
 
+    // Context menu
+
+    async function navigate(url) {
+      visChange0();
+      await delay(250);
+      window.location.href = url;
+    }
+
+    window.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+      document.getElementById("contextmenu").style.left = e.clientX + 'px';
+      document.getElementById("contextmenu").style.top = e.clientY + 'px';
+      document.getElementById("contextmenu").hidden = false;
+    });
+
+    window.addEventListener("mousedown", (e) => {
+      if (e.button == 0) {
+        if (document.elementFromPoint(e.clientX, e.clientY) !== document.getElementById("contextmenu")) {
+          if (!document.elementFromPoint(e.clientX, e.clientY).classList.contains("context")) {
+            document.getElementById("contextmenu").hidden = true;
+          }
+        }
+      }
+    });
+
+    document.querySelectorAll(".context").forEach(element => {
+      element.addEventListener("click", async (e) => {
+        e.preventDefault();
+        visChange0();
+        await delay(250);
+        window.location.href = element.href;
+      })
+    });
+
+    // End
+
     document.getElementById("save").addEventListener("click", () => save("source"))
 
     async function f2() {
       setDayCookie("light", light);
+
+      document.querySelectorAll(".context").forEach(element => {
+        element.style.color = document.querySelector("p").style.color;
+      });
+
 
       if (getCookie("test") === "TESTVALUE") {
         if (!tried) {
@@ -334,6 +396,9 @@ Never take the sorting of the correct questions from the template. Just make the
           document.getElementById("points").innerText = "Points: 0";
         }
       }
+
+      document.querySelector("fieldset").style.borderColor = document.querySelector("p").style.color;
+      document.querySelector("legend").style.color = document.querySelector("p").style.color;
 
       if (light == true) { // Light mode
         document.querySelectorAll("p").forEach(element => {
@@ -360,9 +425,12 @@ Never take the sorting of the correct questions from the template. Just make the
             }
           }
         });
-        document.getElementById("q1").style.color = "black";
-        document.getElementById("q2").style.color = "black";
-        document.getElementById("q3").style.color = "black";
+        try {
+          document.getElementById("q1").style.color = "black";
+          document.getElementById("q2").style.color = "black";
+          document.getElementById("q3").style.color = "black";
+        }
+        catch { }
         document.getElementById("formdiv").style.backgroundColor = "rgba(255, 255, 255, 0.8)"
         document.querySelector("ul").style.backgroundColor = "rgb(0, 255, 149)";
         document.getElementsByClassName("current")[0].style.color = "rgba(0, 0, 0, 1)";

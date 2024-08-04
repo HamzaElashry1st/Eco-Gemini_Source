@@ -423,6 +423,38 @@ input[type="radio"]:checked {
   }
 }
 
+fieldset {
+  border-radius: 25px;
+}
+
+/* Context menu */
+a.context {
+  text-decoration: none;
+  font-size: larger;
+}
+
+a.context:hover {
+  cursor: pointer;
+}
+
+#contextmenu {
+  transition: none;
+  position: absolute;
+  background-color: rgba(100, 100, 100, 0.5);
+  filter: drop-shadow(12px 12px 2px rgba(25, 25, 25, 0.5));
+  border-radius: 20px;
+  width: fit-content;
+  z-index: 0;
+  transition: all 0.5s;
+}
+
+hr {
+  border: 0;
+  border-top: 2px solid rgba(55, 55, 55, 0.2);
+}
+
+/* End */
+
 .loading {
   border: 5px solid #f3f3f3;
   border-top: 5px solid #3498db;

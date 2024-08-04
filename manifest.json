@@ -1,10 +1,35 @@
 {
+    "short-name": "Eco-Gemini",
     "name": "Eco-Gemini",
+    "start_url": "index.html",
+    "display": "standalone",
     "icons": [
         {
             "src": "Assets/Logo.svg",
             "type": "image/svg+xml",
             "sizes": "512x512"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Eco-Quiz",
+            "url": "daily.html"
+        },
+        {
+            "name": "Eco-Chat",
+            "url": "eco-gemini.html"
+        },
+        {
+            "name": "Eco-To-Do",
+            "url": "todo.html"
+        },
+        {
+            "name": "Eco-Leaderboard",
+            "url": "leaderboard.html"
+        },
+        {
+            "name": "Eco",
+            "url": "index.html"
         }
     ]
 }
