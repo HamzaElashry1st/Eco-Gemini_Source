@@ -49,14 +49,16 @@
     <button id="cchlog"><img src="Assets/Close.svg"></button>
     <h1>Changelog</h1>
   </dialog>
-  <div id="formdiv">
-    <button id="setbtn"><img src="Assets/Settings.svg"></button>
-    <button id="schlog"><img src="Assets/Changelog.svg"></button>
-    <button id="download"><img src="Assets/Download.svg"></button>
-    <h1 class="main"><img src="Assets/Gemini.svg" style="margin-bottom: -3px;"> Eco-Gemini</h1>
-    <p class="output main">Ask AI</p>
-    <p class="main">Click on a message to copy.</p>
-    <br>
+  <div id="formdivc">
+    <div id="formdiv" class="prevented">
+      <button id="setbtn"><img src="Assets/Settings.svg"></button>
+      <button id="schlog"><img src="Assets/Changelog.svg"></button>
+      <button id="download"><img src="Assets/Download.svg"></button>
+      <h1 class="main"><img src="Assets/Gemini.svg" style="margin-bottom: -3px;"> Eco-Gemini</h1>
+      <p class="output main">Ask AI</p>
+      <p class="main">Click on a message to copy.</p>
+      <br>
+    </div>
   </div>
   <div id="inputDIV" style="text-align: center;">
     <br>
@@ -306,6 +308,47 @@
       };
     }
 
+    async function animateCreate(element) {
+      document.getElementById("formdiv").style.animation = "none";
+      let animationTimeoutId = null;
+      const main = document.getElementById("formdiv");
+      const ms = 1000;
+
+      insertChild();
+
+      async function insertChild() {
+        setPreviousHeight();
+
+        main.appendChild(element);
+
+        setCurrentHeight();
+        animate();
+      }
+
+      function setPreviousHeight() {
+        main.style.setProperty('--previous-height', main.scrollHeight + 'px');
+      }
+
+      function setCurrentHeight() {
+        main.style.setProperty('--current-height', main.scrollHeight + 'px');
+      }
+
+      function setAnimation() {
+        main.style.setProperty('animation', `animate-form-height ${ms}ms ease`);
+      }
+
+      function clearAnimation() {
+        main.style.removeProperty('animation');
+        clearTimeout(animationTimeoutId);
+      }
+
+      function animate() {
+        clearTimeout(animationTimeoutId);
+        setAnimation();
+        animationTimeoutId = setTimeout(clearAnimation, ms);
+      }
+    }
+
     function setYearCookie(cname, cvalue) {
       var now = new Date();
       var expire = new Date();
@@ -380,8 +423,10 @@
       userMessageElement.className = "input";
       userMessageElement.innerHTML = "<p><img style=\"float: right; margin-top: 10px;\" src=\"Assets/User.svg\">" + document.getElementById("input").value + "<br></p>";
       AIReMessageElement.className = "output";
-      document.querySelectorAll("div")[0].appendChild(userMessageElement);
-      document.querySelectorAll("div")[0].appendChild(AIReMessageElement);
+      const TotalElement = document.createElement("div");
+      TotalElement.appendChild(userMessageElement);
+      TotalElement.appendChild(AIReMessageElement);
+      Promise.resolve().then(animateCreate(TotalElement));
       document.getElementsByClassName("output")[document.getElementsByClassName("output").length - 1].scrollIntoView();
 
       if (document.getElementById("fileInput").files.length === 1) {
@@ -422,7 +467,7 @@
       console.log(file);
       console.log(filesList);
       Promise.resolve().then(async function () {
-        while (running) {
+        do {
           if (running) {
             document.getElementsByClassName("output")[document.getElementsByClassName("output").length - 1].innerHTML = "<p><img src=\"Assets/Gemini.svg\">Generating.<div class=\"loading\"></div></p><br>";
           }
@@ -435,7 +480,7 @@
             document.getElementsByClassName("output")[document.getElementsByClassName("output").length - 1].innerHTML = "<p><img src=\"Assets/Gemini.svg\">Generating...<div class=\"loading\"></div></p><br>";
           }
           await delay(500);
-        };
+        } while (running);
       });
       if (file) {
         images.push(sentFile);

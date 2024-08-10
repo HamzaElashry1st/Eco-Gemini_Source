@@ -221,15 +221,39 @@ html {
 }
 
 #formdiv {
-  animation-name: revcurback;
-  animation-duration: 0.75s;
   text-align: center;
   background-color: rgba(255, 255, 255, 0.8);
   margin-right: 20%;
   margin-left: 20%;
   border-radius: 25px;
-  transition: background-color 0.5s ease;
+  transition: all 0.5s ease;
   filter: drop-shadow(25px 25px 2.5px rgba(0, 0, 0, 0.35));
+  --previous-height: 0px;
+  --current-height: 250px;
+  overflow: scroll;
+  scrollbar-width: none;
+  height: var(--current-height);
+  max-height: 500px;
+}
+
+#formdiv:not(.prevented) {
+  animation-name: revcurback;
+  animation-duration: 0.75s;
+}
+
+#formdivc {
+  animation-name: revcurback;
+  animation-duration: 0.75s;
+}
+
+@keyframes animate-form-height {
+  0% {
+    height: var(--previous-height);
+  }
+
+  100% {
+    height: var(--current-height);
+  }
 }
 
 h1.main {
