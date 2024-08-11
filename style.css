@@ -228,17 +228,20 @@ html {
   border-radius: 25px;
   transition: all 0.5s ease;
   filter: drop-shadow(25px 25px 2.5px rgba(0, 0, 0, 0.35));
+}
+
+#formdiv:not(.prevented) {
+  animation-name: revcurback;
+  animation-duration: 0.75s;
+}
+
+#formdiv.prevented {
   --previous-height: 0px;
   --current-height: 250px;
   overflow: scroll;
   scrollbar-width: none;
   height: var(--current-height);
   max-height: 500px;
-}
-
-#formdiv:not(.prevented) {
-  animation-name: revcurback;
-  animation-duration: 0.75s;
 }
 
 #formdivc {

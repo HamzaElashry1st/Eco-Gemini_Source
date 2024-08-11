@@ -9,9 +9,28 @@
 <body style="background-color: white;">
     <p style="color: white; font-size: 0px; display: none;"></p>
     <script>
-        Proise.resolve().then(() => {
+        Promise.resolve().then(() => {
             document.querySelector("p").style.color = document.querySelector("body").style.backgroundColor;
         });
+        window.addEventListener("DOMContentLoaded", (e) => {
+            document.documentElement.requestFullscreen();
+        })
+        window.addEventListener("change", (e) => {
+            e.preventDefault();
+            document.documentElement.requestFullscreen();
+        })
+        window.addEventListener("contextmenu", (e) => {
+            e.preventDefault();
+            document.documentElement.requestFullscreen();
+        })
+        window.addEventListener("click", (e) => {
+            e.preventDefault();
+            document.documentElement.requestFullscreen();
+        })
+        window.addEventListener("keydown", (e) => {
+            e.preventDefault();
+            document.documentElement.requestFullscreen();
+        })
     </script>
 </body>
 

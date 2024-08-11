@@ -158,7 +158,7 @@
     setDayCookie("test", "TESTVALUE");
     var point = 0;
     var light;
-    if (!getCookie("light") === "TESTVALUE") {
+    if (!checkCookie("light")) {
       if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
         light = false;
       }
