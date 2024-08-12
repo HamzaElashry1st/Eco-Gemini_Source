@@ -308,13 +308,14 @@
       };
     }
 
-    async function animateCreate(element, elementHeight) {
-      const main = document.getElementById("formdiv");
+    async function animateParent(parent, eventFunction) {
+      // No time for the rest of the websites.
+      const main = parent;
       const ms = 1000;
-      const mainprev = main.scrollHeight;
       main.style.setProperty('--previous-height', main.scrollHeight + 'px');
-      main.appendChild(element);
-      main.style.setProperty('--current-height', (elementHeight * 1.34 + mainprev) + 'px');
+      eventFunction();
+      await delay(25);
+      main.style.setProperty('--current-height', main.scrollHeight + 'px');
       main.style.setProperty('animation', `animate-form-height ${ms}ms ease`);
       await delay(ms);
       main.style.removeProperty('animation');
@@ -395,13 +396,16 @@
       userMessageElement.innerHTML = "<p><img style=\"float: right; margin-top: 10px;\" src=\"Assets/User.svg\">" + document.getElementById("input").value + "<br></p>";
       AIReMessageElement.className = "output";
       const TotalElement = document.createElement("div");
-      TotalElement.className = "Total";
       TotalElement.appendChild(userMessageElement);
       TotalElement.appendChild(AIReMessageElement);
-      document.getElementById("formdiv").appendChild(TotalElement);
-      const height = TotalElement.getBoundingClientRect().height + document.getElementById("formdiv").offsetHeight / 2;
-      document.getElementById("formdiv").removeChild(TotalElement);
-      Promise.resolve().then(animateCreate(TotalElement, height));
+      Promise.resolve().then(async () => {
+        animateParent(document.getElementById("formdiv"), async () => {
+          document.getElementById("inputDIV").style.opacity = "0";
+          document.getElementById("formdiv").appendChild(TotalElement);
+          await delay(1000);
+          document.getElementById("inputDIV").style.opacity = "1";
+        });
+      });
       document.getElementsByClassName("output")[document.getElementsByClassName("output").length - 1].scrollIntoView();
 
       if (document.getElementById("fileInput").files.length === 1) {
@@ -510,7 +514,9 @@
       content += "<br><p class=\"Eco-Gemini\">Eco-Gemini:</p> " + text + "<br>";
       running = false;
       document.getElementsByClassName("output")[document.getElementsByClassName("output").length - 1].style.textDecoration = "none";
-      document.getElementsByClassName("output")[document.getElementsByClassName("output").length - 1].innerHTML = "<p><img src=\"Assets/Gemini.svg\">" + text.replace(/\*/g, "").replace(/#/g, "").replace(/```/g, ""); + "</p><br>";
+      animateParent(document.getElementById("formdiv"), () => {
+        document.getElementsByClassName("output")[document.getElementsByClassName("output").length - 1].innerHTML = "<p><img src=\"Assets/Gemini.svg\">" + text.replace(/\*/g, "").replace(/#/g, "").replace(/```/g, "") + "</p><br>";
+      });
       const USM = document.getElementsByClassName("input")[document.getElementsByClassName("input").length - 1].innerText;
       document.getElementsByClassName("input")[document.getElementsByClassName("input").length - 1].addEventListener("click", async function () {
         navigator.clipboard.writeText(USM);
