@@ -77,6 +77,10 @@ void Listen(string[] files)
         {
             response.ContentType = "audio/mpeg";
         }
+        else if (filePath.EndsWith(".json"))
+        {
+            response.ContentType = "application / json";
+        }
         // ...
         else if (filePath == AppDomain.CurrentDomain.BaseDirectory)
         {
@@ -127,5 +131,6 @@ Listen(
     $"http://127.0.0.1:{port}/Assets/Leaderboard.svg",
     $"http://127.0.0.1:{port}/Assets/Click.mp3",
     $"http://127.0.0.1:{port}/Assets/Error.mp3",
+    $"http://127.0.0.1:{port}/manifest.json",
     $"http://127.0.0.1:{port}/DEVELOPMENTAPIKEYS/APIKEYFOLDERCONTAINER/API_KEY.html"
 ]);

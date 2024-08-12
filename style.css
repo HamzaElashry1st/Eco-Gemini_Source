@@ -238,10 +238,7 @@ html {
 #formdiv.prevented {
   --previous-height: 0px;
   --current-height: 250px;
-  overflow: scroll;
-  scrollbar-width: none;
   height: var(--current-height);
-  max-height: 500px;
 }
 
 #formdivc {

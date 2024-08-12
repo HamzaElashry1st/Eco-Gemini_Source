@@ -63,7 +63,7 @@
   <div id="inputDIV" style="text-align: center;">
     <br>
     <input type="text" id="textInput" hidden>
-    <textarea rows="3" tabindex="-1" cols="20" id="input"></textarea>
+    <textarea rows="3" tabindex="-1" cols="20" id="input" maxlength="500"></textarea>
     <br>
     <button id="submit"><img src="Assets/Submit.svg"></button>
     <input type="file" name="fileInput" id="fileInput" style="display: none;" accept=".png, .jpeg, .jpg, .webp, .txt" />
@@ -308,45 +308,16 @@
       };
     }
 
-    async function animateCreate(element) {
-      document.getElementById("formdiv").style.animation = "none";
-      let animationTimeoutId = null;
+    async function animateCreate(element, elementHeight) {
       const main = document.getElementById("formdiv");
       const ms = 1000;
-
-      insertChild();
-
-      async function insertChild() {
-        setPreviousHeight();
-
-        main.appendChild(element);
-
-        setCurrentHeight();
-        animate();
-      }
-
-      function setPreviousHeight() {
-        main.style.setProperty('--previous-height', main.scrollHeight + 'px');
-      }
-
-      function setCurrentHeight() {
-        main.style.setProperty('--current-height', main.scrollHeight + 'px');
-      }
-
-      function setAnimation() {
-        main.style.setProperty('animation', `animate-form-height ${ms}ms ease`);
-      }
-
-      function clearAnimation() {
-        main.style.removeProperty('animation');
-        clearTimeout(animationTimeoutId);
-      }
-
-      function animate() {
-        clearTimeout(animationTimeoutId);
-        setAnimation();
-        animationTimeoutId = setTimeout(clearAnimation, ms);
-      }
+      const mainprev = main.scrollHeight;
+      main.style.setProperty('--previous-height', main.scrollHeight + 'px');
+      main.appendChild(element);
+      main.style.setProperty('--current-height', (elementHeight * 1.34 + mainprev) + 'px');
+      main.style.setProperty('animation', `animate-form-height ${ms}ms ease`);
+      await delay(ms);
+      main.style.removeProperty('animation');
     }
 
     function setYearCookie(cname, cvalue) {
@@ -424,9 +395,13 @@
       userMessageElement.innerHTML = "<p><img style=\"float: right; margin-top: 10px;\" src=\"Assets/User.svg\">" + document.getElementById("input").value + "<br></p>";
       AIReMessageElement.className = "output";
       const TotalElement = document.createElement("div");
+      TotalElement.className = "Total";
       TotalElement.appendChild(userMessageElement);
       TotalElement.appendChild(AIReMessageElement);
-      Promise.resolve().then(animateCreate(TotalElement));
+      document.getElementById("formdiv").appendChild(TotalElement);
+      const height = TotalElement.getBoundingClientRect().height + document.getElementById("formdiv").offsetHeight / 2;
+      document.getElementById("formdiv").removeChild(TotalElement);
+      Promise.resolve().then(animateCreate(TotalElement, height));
       document.getElementsByClassName("output")[document.getElementsByClassName("output").length - 1].scrollIntoView();
 
       if (document.getElementById("fileInput").files.length === 1) {
