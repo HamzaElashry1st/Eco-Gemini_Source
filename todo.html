@@ -153,7 +153,7 @@
         e.preventDefault();
       }
     });
-
+    //
     setDayCookie("test", "UNTEST");
     setDayCookie("test", "TESTVALUE");
     var point = 0;
@@ -478,6 +478,27 @@
 
     // End
 
+    document.querySelectorAll("input").forEach(element => {
+      element.addEventListener("input", () => {
+        for (let index = 0; index < (document.getElementsByClassName("tskinp").length - 1); index++) {
+          if (document.getElementsByClassName("tskinp")[index].value.trimStart() != "" && !document.getElementById("tsk" + (index + 1) + "d").hidden) {
+            if (document.getElementsByClassName("tskinp")[index].placeholder.split(' ')[0] === "Task") {
+              Promise.resolve().then(() => {
+                document.getElementById("tsk" + (index + 2) + "d").hidden = false;
+              })
+            }
+          }
+          else {
+            if (document.getElementsByClassName("tskinp")[index].placeholder.split(' ')[0] === "Task") {
+              Promise.resolve().then(() => {
+                document.getElementById("tsk" + (index + 2) + "d").hidden = true;
+              })
+            }
+          }
+        }
+      })
+    });
+
     async function f2() {
       setDayCookie("light", light);
 
@@ -496,19 +517,6 @@
       var checkedValue = Number(inputElements.filter(val => val.checked).length * 5);
       point = Number(checkedValue);
       AnimateNumber(Number(num), point, 100)
-
-      for (let index = 0; index < (document.getElementsByClassName("tskinp").length - 1); index++) {
-        if (document.getElementsByClassName("tskinp")[index].value.trimStart() != "" && !document.getElementById("tsk" + (index + 1) + "d").hidden) {
-          if (document.getElementsByClassName("tskinp")[index].placeholder.split(' ')[0] === "Task") {
-            document.getElementById("tsk" + (index + 2) + "d").hidden = false;
-          }
-        }
-        else {
-          if (document.getElementsByClassName("tskinp")[index].placeholder.split(' ')[0] === "Task") {
-            document.getElementById("tsk" + (index + 2) + "d").hidden = true;
-          }
-        }
-      }
 
       for (let index = 0; index <= (document.getElementsByClassName("tskinp").length - 1); index++) {
         if (document.getElementsByClassName("tskinp")[index].value.trimStart() != "" || document.getElementsByClassName("tskinp")[index].placeholder != "Task " + (index + 1)) {
